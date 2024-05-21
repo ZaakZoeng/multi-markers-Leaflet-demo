@@ -27,18 +27,11 @@
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
-        // Initialize the map with China as the initial view
-        const map = L.map('map').setView([22.8617, 104.1954], 3.5);
-
-        // Add OpenStreetMap tiles
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
-        }).addTo(map);
-
-        // Add markers for cities with more information
+        // Define city data
         const cities = [
             {
-                name: `
+                name: 'Shanghai',
+                info: `
                     <b>Shanghai</b><br>
                     Population: 24.28 million (2019)<br>
                     Area: 6,340.5 km²<br>
@@ -47,7 +40,8 @@
                 location: [31.2304, 121.4737]
             },
             {
-                name: `
+                name: 'Hangzhou',
+                info: `
                     <b>Hangzhou</b><br>
                     Population: 10.36 million (2019)<br>
                     Area: 16,596 km²<br>
@@ -56,7 +50,8 @@
                 location: [30.2741, 120.1551]
             },
             {
-                name: `
+                name: 'Shenzhen',
+                info: `
                     <b>Shenzhen</b><br>
                     Population: 13.44 million (2019)<br>
                     Area: 1,997.47 km²<br>
@@ -66,10 +61,27 @@
             }
         ];
 
+        // Initialize the map with the world as the initial view
+        const map = L.map('map');
+
+        // Calculate the center of all cities
+        const cityCoordinates = cities.map(city => city.location);
+        const bounds = L.latLngBounds(cityCoordinates);
+        const center = bounds.getCenter();
+
+        // Set the map view to center and appropriate zoom level
+        map.setView(center, map.getBoundsZoom(bounds));
+
+        // Add OpenStreetMap tiles
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: 'Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        // Add markers for cities with more information
         cities.forEach(city => {
             L.marker(city.location)
                 .addTo(map)
-                .bindPopup(`<b>${city.name}</b>`);
+                .bindPopup(city.info);
         });
     </script>
 </body>
